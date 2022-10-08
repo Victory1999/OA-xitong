@@ -1,8 +1,8 @@
 import axios from 'axios'
-
+// eslint-disable-next-line no-undef
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000
+  timeout: 2000
 })
 
 service.interceptors.request.use(
@@ -16,7 +16,13 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    return response
+    // return response
+    const { success, message } = response.data
+    if (success) {
+      return response.data
+    } else {
+      return Promise.reject(new Error(message))
+    }
   },
   error => {
     return Promise.reject(error)
