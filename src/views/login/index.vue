@@ -69,7 +69,8 @@
 
 <script>
 import { validmobile } from '@/utils/validate'
-import { loginAPI } from '@/api'
+// import { loginAPI } from '@/api'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -115,19 +116,7 @@ export default {
     }
   },
   methods: {
-    // handleLogin(){
-    //     this.$refs.loginForm.validate(async(valid) => { // 登录校验
-    //     if (valid) {
-    //       this.loading = true
-    //       const res = await loginAPI(this.loginForm)
-    //       console.log(res)
-    //       this.loading = false
-    //     } else {
-    //       return false // 未通过
-    //     }
-
-    // }
-    // },
+    ...mapActions('user', ['loginActions']),
 
     showPwd() {
       if (this.passwordType === 'password') {
@@ -140,39 +129,38 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(async(valid) => {
         if (valid) {
-          // this.loading = true
-          // this.$store
-          //   .dispatch('user/login', this.loginForm)
-          //   .then(() => {
-          //     this.$router.push({ path: this.redirect || '/' })
-          //     this.loading = false
-          //   })
-          //   .catch(() => {
-          //     this.loading = false
-          //   })
           this.loading = true
+          try {
+            const res = await this.loginActions(this.loginForm)
+            this.$message.success(res.message)
+            // this.$store.commit('user/setToken', res.data)
+            console.log(res)
+          } catch (err) {
+            this.$message.error(err).message
+            console.error(err)
+          }
           this.loading = false
         } else {
           // console.log('error submit!!')
           return false
         }
       })
-    },
-    // eslint-disable-next-line no-dupe-keys, vue/no-dupe-keys
-    handleLogin() {
-      this.$refs.loginForm.validate(async(valid) => {
-        if (valid) {
-          this.loading = true
-          const res = await loginAPI(this.loginForm)
-          console.log(res)
-          this.loading = false
-        } else {
-          return false
-        }
-      })
     }
+    // eslint-disable-next-line no-dupe-keys, vue/no-dupe-keys
+    // handleLogin() {
+    //   this.$refs.loginForm.validate(async(valid) => {
+    //     if (valid) {
+    //       this.loading = true
+    //       const res = await loginAPI(this.loginForm)
+    //       console.log(res)
+    //       this.loading = false
+    //     } else {
+    //       return false
+    //     }
+    //   })
+    // }
   }
 }
 
