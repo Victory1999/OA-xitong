@@ -136,7 +136,8 @@ export default {
             const res = await this.loginActions(this.loginForm)
             this.$message.success(res.message)
             // this.$store.commit('user/setToken', res.data)
-            console.log(res)
+            this.$router.replace('/')
+            // console.log(res)
           } catch (err) {
             this.$message.error(err).message
             console.error(err)
